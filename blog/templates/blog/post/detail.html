@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load blog_tags %}
 
 {% block title %}{{ post.title }}{% endblock title %}
 
@@ -7,11 +8,20 @@
     <p class="date">
         Opublikowany {{ post.publish }} przez {{ post.author }}
     </p>
-    {{ post.body|linebreaks }}
+    {{ post.body|markdown_format }}
 
     <p>
         <a href="{% url "blog:post_share" post.id %}"> Udostępnij post </a>
     </p>
+
+    <h2>Podobne posty</h2>
+    {% for post in similar_posts %}
+        <p>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </p>
+    {% empty %}
+        Nie ma podobnych postów.
+    {% endfor %}
 
     {% with comments.count as total_comments %}
         <h2>{{ total_comments }} komentarz{{ total_comments|pluralize:"y" }}</h2>
